@@ -43,3 +43,7 @@
 .post_addAuthor {
 	margin-bottom: 10px;
 }
+.likePhoto, .dislikePhoto {
+	border: none;
+	background-color: transparent;
+}

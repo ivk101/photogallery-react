@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
+  Link,
+  useLocation
 } from "react-router-dom";
 // import fetch from 'node-fetch';
 // global.fetch = fetch;
 import Unsplash, {
     toJson
 } from 'unsplash-js';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateData } from './../features/counter/counterSlice';
+import { useSelector, useDispatch } from 'react-redux'
+import { decrement, increment, addValues, addValuesBegin, deleteValues } from '../features/photos/photosSlice'
 import './PhotoGallery.css';
 
 
@@ -19,14 +20,9 @@ import './PhotoGallery.css';
 const unsplash = new Unsplash({ 
 	accessKey: 'UNn5owZvWC7Ia3Wq6ucOuhKo-lm9qC_OGaZwbBBmt6g',
 	secret: 'oirSNKhRzQ36g4X8N-uT0_UynAKtu-T2vw9Leo9tVs0',
-	callbackUrl: 'http://localhost:3000/'
+	callbackUrl: 'http://localhost:3000/auth'
 });
 
-unsplash.photos.listPhotos(2, 10, "latest")
-  .then(toJson)
-  .then(json => {
-    console.log(json[0]);
-  });
 
 const authenticationUrl = unsplash.auth.getAuthenticationUrl([
   "public",
@@ -36,21 +32,30 @@ const authenticationUrl = unsplash.auth.getAuthenticationUrl([
   "write_photos"
 ]);
 console.log(authenticationUrl)
+const location = useLocation();
+location.assign(authenticationUrl);
 
 
 const numbers = [1, 2, 3, 4, 5];
 
 
+
+
 function PhotoGallery() {
   const dispatch = useDispatch()
+  const count = useSelector((state) => state.photos.data)
   
-	const [LatestPhotos, setLatestPhotos] = useState([]);    
-    unsplash.photos.listPhotos(2, 10, "latest")
+	const [LatestPhotos, setLatestPhotos] = useState([]);  
+
+    unsplash.photos.listPhotos(5, 10, "latest")
     .then(toJson)
     .then(json => {
+       //dispatch(deleteValues())
        setLatestPhotos(json)
+       dispatch(addValues(LatestPhotos))
     });
-    // dispatch(updateData())
+    console.log(LatestPhotos)
+    
     
     
     const listItems = LatestPhotos.map((item, index) =>
@@ -71,6 +76,9 @@ function PhotoGallery() {
 
 	return (		
 		<ul className="container">
+    <button aria-label="Decrement value" onClick={() => dispatch(decrement())}>Decrement</button>
+        count
+    <button aria-label="Increment value" onClick={() => dispatch(increment())}>Increment</button>
 		    {listItems}
 		</ul> 
     )

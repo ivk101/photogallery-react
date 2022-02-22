@@ -8,18 +8,20 @@ import {
 } from "react-router-dom";
 import PhotoGallery from './pages/PhotoGallery';
 import PhotoPage from './pages/PhotoPage';
-import Counter from './features/counter/Counter';
 
 
 function App() { 
   return ( 
         <Router><Context.Provider>
-    	    <div className="wrapper">    	        
-                <Counter/>
-                <PhotoGallery/>        
+    	    <div className="wrapper">  
+            <ul>
+                <li><Link to={`/`}>Main</Link></li>
+                <li><Link to={`/photoGallery`}>Gallery</Link></li>
+            </ul>   
       <div> 
         <Routes>
-          <Route path="/photoGallery" exact={true} component={<PhotoGallery/>} />
+          <Route path="/" element={<PhotoGallery/>} />
+          <Route path="/photoGallery" element={<PhotoGallery/>} />
           <Route path="/photo/:id" element={<PhotoPage/>} />
         </Routes>
       </div>
